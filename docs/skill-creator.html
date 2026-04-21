@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill erstellen · OER-Skills-Bibliothek</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1a2744;--navy-light:#253660;--navy-hover:#2d4075;
+  --amber:#f59e0b;--amber-dark:#d97706;--amber-bg:#fef3c7;
+  --bg:#f3f4f8;--surface:#fff;--border:#e4e7ef;
+  --text:#1a1f36;--muted:#64748b;--subtle:#94a3b8;
+  --success:#10b981;--error:#ef4444;--info:#3b82f6;
+  --radius:10px;--radius-lg:16px;
+  --shadow:0 1px 3px rgba(0,0,0,.08);
+  --shadow-md:0 4px 16px rgba(0,0,0,.10);
+}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'DM Serif Display',serif}
+
+/* HEADER */
+.header{background:var(--navy);padding:0 1.75rem;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:60}
+.logo{display:flex;align-items:center;gap:.625rem;text-decoration:none}
+.logo-box{width:30px;height:30px;background:var(--amber);border-radius:7px;display:flex;align-items:center;justify-content:center}
+.logo-box svg{fill:var(--navy);width:16px;height:16px}
+.logo-text{color:#fff;font-weight:600;font-size:.9rem}
+.header-back{color:rgba(255,255,255,.55);font-size:.8rem;text-decoration:none;display:flex;align-items:center;gap:.35rem;transition:color .15s}
+.header-back:hover{color:#fff}
+.header-back svg{width:14px;height:14px;fill:currentColor}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--navy),var(--navy-light));padding:2.5rem 1.75rem;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:.375rem;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);color:var(--amber);font-size:.7rem;font-weight:600;padding:.275rem .75rem;border-radius:99px;margin-bottom:1rem;text-transform:uppercase;letter-spacing:.06em}
+.hero h1{color:#fff;font-size:1.875rem;margin-bottom:.5rem}
+.hero p{color:rgba(255,255,255,.6);font-size:.9rem;max-width:480px;margin:0 auto}
+
+/* STEPS */
+.steps-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:.875rem 1.75rem;display:flex;align-items:center;gap:0;position:sticky;top:56px;z-index:50;overflow-x:auto}
+.step-item{display:flex;align-items:center;gap:.5rem;flex-shrink:0}
+.step-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;transition:all .2s;flex-shrink:0}
+.step-label{font-size:.8rem;font-weight:500;color:var(--subtle);white-space:nowrap;transition:color .2s}
+.step-sep{width:32px;height:1px;background:var(--border);flex-shrink:0;margin:0 .25rem}
+.step-item.active .step-num{background:var(--amber);color:var(--navy)}
+.step-item.active .step-label{color:var(--text)}
+.step-item.done .step-num{background:var(--success);color:#fff}
+.step-item.done .step-label{color:var(--muted)}
+.step-item:not(.active):not(.done) .step-num{background:var(--bg);color:var(--subtle);border:1.5px solid var(--border)}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:1fr 380px;gap:1.5rem;padding:1.75rem;max-width:1200px;margin:0 auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+
+/* PANEL */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden}
+.panel-head{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);background:linear-gradient(135deg,#f8f9fe,var(--surface))}
+.panel-head h2{font-size:1.1rem;color:var(--navy);margin-bottom:.2rem}
+.panel-head p{font-size:.8rem;color:var(--muted);line-height:1.5}
+.panel-body{padding:1.5rem}
+
+/* FORM */
+.field-group{margin-bottom:1.125rem}
+.field-group label{display:block;font-size:.75rem;font-weight:600;color:var(--muted);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.04em}
+.field-group label .req{color:var(--amber-dark)}
+.field-group input,.field-group select,.field-group textarea{width:100%;padding:.575rem .875rem;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);transition:border-color .15s,background .15s;resize:vertical}
+.field-group input:focus,.field-group select:focus,.field-group textarea:focus{outline:none;border-color:var(--amber);background:#fff}
+.field-group textarea{min-height:120px;line-height:1.6}
+.field-group .hint{font-size:.72rem;color:var(--subtle);margin-top:.35rem;line-height:1.4}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:600px){.field-row{grid-template-columns:1fr}}
+.char-counter{float:right;font-size:.7rem;color:var(--subtle)}
+.char-counter.warn{color:var(--amber-dark)}
+.char-counter.over{color:var(--error)}
+
+/* TAGS INPUT */
+.tags-wrap{display:flex;flex-wrap:wrap;gap:.375rem;padding:.5rem .75rem;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);min-height:42px;cursor:text;transition:border-color .15s}
+.tags-wrap:focus-within{border-color:var(--amber);background:#fff}
+.tag-chip{display:inline-flex;align-items:center;gap:.25rem;background:var(--amber-bg);color:#92400e;border:1px solid #fde68a;border-radius:6px;padding:.2rem .5rem;font-size:.75rem;font-weight:500}
+.tag-chip button{background:none;border:none;cursor:pointer;color:#92400e;opacity:.6;padding:0;font-size:.85rem;line-height:1;display:flex}
+.tag-chip button:hover{opacity:1}
+.tags-input{border:none;background:transparent;outline:none;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--text);min-width:80px;flex:1;padding:.1rem 0}
+
+/* KNOWLEDGE FILES */
+.knowledge-drop{border:2px dashed var(--border);border-radius:var(--radius);padding:1.25rem;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg)}
+.knowledge-drop:hover,.knowledge-drop.drag-over{border-color:var(--amber);background:var(--amber-bg)}
+.knowledge-drop svg{width:28px;height:28px;fill:var(--subtle);margin-bottom:.5rem}
+.knowledge-drop p{font-size:.8125rem;color:var(--muted)}
+.knowledge-drop span{font-size:.75rem;color:var(--subtle)}
+.knowledge-list{margin-top:.75rem;display:flex;flex-direction:column;gap:.375rem}
+.knowledge-file{display:flex;align-items:center;justify-content:space-between;padding:.5rem .75rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:.8125rem}
+.knowledge-file-info{display:flex;align-items:center;gap:.5rem;color:var(--muted)}
+.knowledge-file-info svg{width:14px;height:14px;fill:var(--amber-dark);flex-shrink:0}
+.knowledge-file button{background:none;border:none;cursor:pointer;color:var(--subtle);font-size:1rem;line-height:1;padding:.1rem}
+.knowledge-file button:hover{color:var(--error)}
+
+/* PREVIEW PANEL */
+.preview-sticky{position:sticky;top:calc(56px + 56px + 1.75rem)}
+.preview-code{background:#0f1629;border-radius:var(--radius);padding:1.125rem;font-family:'SF Mono','Fira Code',monospace;font-size:.72rem;line-height:1.7;color:#94a3b8;max-height:380px;overflow-y:auto;white-space:pre-wrap;word-break:break-word}
+.preview-code .fm-key{color:#f59e0b}
+.preview-code .fm-val{color:#86efac}
+.preview-code .fm-sep{color:#475569}
+.preview-code .content{color:#cbd5e1}
+
+/* GITHUB PANEL */
+.github-panel{margin-top:1rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow)}
+.github-head{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.625rem}
+.github-head svg{width:18px;height:18px;fill:var(--text)}
+.github-head h3{font-size:.9375rem;color:var(--navy)}
+.github-body{padding:1.125rem}
+.token-field{position:relative}
+.token-field input{padding-right:2.5rem}
+.token-toggle{position:absolute;right:.625rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--subtle);display:flex;padding:.2rem}
+.token-toggle:hover{color:var(--text)}
+.token-toggle svg{width:16px;height:16px;fill:currentColor}
+.token-hint{font-size:.72rem;color:var(--subtle);margin-top:.375rem;line-height:1.4}
+.token-hint a{color:var(--info);text-decoration:none}
+.token-hint a:hover{text-decoration:underline}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.625rem 1.25rem;border-radius:var(--radius);font-size:.9rem;font-weight:500;font-family:'DM Sans',sans-serif;border:none;cursor:pointer;transition:all .15s;line-height:1;text-decoration:none}
+.btn-primary{background:var(--navy);color:#fff}
+.btn-primary:hover:not(:disabled){background:var(--navy-light)}
+.btn-amber{background:var(--amber);color:var(--navy)}
+.btn-amber:hover:not(:disabled){background:var(--amber-dark);color:#fff}
+.btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border)}
+.btn-ghost:hover:not(:disabled){background:var(--bg);color:var(--text)}
+.btn-success{background:var(--success);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn svg{width:15px;height:15px;fill:currentColor}
+.btn-full{width:100%}
+
+/* ACTION BAR */
+.action-bar{background:var(--surface);border-top:1px solid var(--border);padding:1rem 1.75rem;display:flex;gap:.75rem;align-items:center;justify-content:space-between;position:sticky;bottom:0;z-index:50}
+.action-bar-left{font-size:.8125rem;color:var(--muted)}
+
+/* STATUS */
+.status-box{padding:.875rem 1rem;border-radius:var(--radius);font-size:.8375rem;line-height:1.5;display:none;margin-top:.875rem}
+.status-box.show{display:flex;align-items:flex-start;gap:.625rem}
+.status-box svg{width:18px;height:18px;fill:currentColor;flex-shrink:0;margin-top:.05rem}
+.status-success{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+.status-error{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.status-loading{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe}
+.status-box a{color:inherit;font-weight:600}
+
+/* SECTION DIVIDER */
+.section-divider{display:flex;align-items:center;gap:.75rem;margin:1.5rem 0 1.25rem;color:var(--subtle);font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* SPINNER */
+.spinner{width:16px;height:16px;border:2.5px solid rgba(255,255,255,.3);border-top-color:currentColor;border-radius:50%;animation:spin .65s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* PROGRESS */
+.progress-wrap{height:3px;background:var(--border);border-radius:99px;margin-top:.625rem;overflow:hidden;display:none}
+.progress-wrap.show{display:block}
+.progress-bar{height:100%;background:var(--amber);border-radius:99px;transition:width .3s;width:0%}
+
+/* VALIDATION */
+input.invalid,select.invalid,textarea.invalid{border-color:var(--error)!important}
+.err-msg{font-size:.72rem;color:var(--error);margin-top:.3rem;display:none}
+.err-msg.show{display:block}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a href="index.html" class="logo">
+    <div class="logo-box">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
+    <span class="logo-text">OER-Skills-Bibliothek</span>
+  </a>
+  <a href="index.html" class="header-back">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    Zurück zur Bibliothek
+  </a>
+</header>
+
+<!-- STEPS -->
+<div class="steps-bar">
+  <div class="step-item active" id="step1-item">
+    <div class="step-num">1</div>
+    <span class="step-label">Skill-Infos</span>
+  </div>
+  <div class="step-sep"></div>
+  <div class="step-item" id="step2-item">
+    <div class="step-num">2</div>
+    <span class="step-label">Inhalt & Wissen</span>
+  </div>
+  <div class="step-sep"></div>
+  <div class="step-item" id="step3-item">
+    <div class="step-num">3</div>
+    <span class="step-label">Einreichen</span>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-badge">✦ Neuer Skill</div>
+  <h1>Skill erstellen</h1>
+  <p>Fülle das Formular aus — dein Skill wird als Pull Request direkt in die Bibliothek eingereicht.</p>
+</div>
+
+<div class="layout">
+
+  <!-- LEFT: FORM -->
+  <div>
+
+    <!-- STEP 1 -->
+    <div id="step1" class="panel">
+      <div class="panel-head">
+        <h2>1 · Skill-Informationen</h2>
+        <p>Beschreibe deinen Skill so, dass Lehrkräfte ihn in der Suche schnell finden.</p>
+      </div>
+      <div class="panel-body">
+
+        <div class="field-group">
+          <label>Titel <span class="req">*</span></label>
+          <input id="f-title" type="text" placeholder="z.B. Bruchrechnung erklären – Klasse 5/6" maxlength="80">
+          <div class="hint">Klar und beschreibend — erscheint als Überschrift in der Bibliothek</div>
+          <div class="err-msg" id="err-title">Bitte einen Titel eingeben.</div>
+        </div>
+
+        <div class="field-group">
+          <label>Beschreibung <span class="req">*</span> <span class="char-counter" id="cc-desc">0/280</span></label>
+          <textarea id="f-desc" rows="3" placeholder="Wofür ist dieser Skill? Wann und von wem wird er genutzt?" maxlength="280"></textarea>
+          <div class="hint">Erscheint in der Suchergebnisliste — also einladend und klar formulieren</div>
+          <div class="err-msg" id="err-desc">Bitte eine Beschreibung eingeben.</div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label>Fach / Kategorie <span class="req">*</span></label>
+            <select id="f-category">
+              <option value="">— wählen —</option>
+              <option>Deutsch</option>
+              <option>Mathematik</option>
+              <option>Englisch</option>
+              <option>Sachunterricht</option>
+              <option>Geschichte</option>
+              <option>Biologie</option>
+              <option>Physik</option>
+              <option>Chemie</option>
+              <option>Kunst</option>
+              <option>Musik</option>
+              <option>Sport</option>
+              <option>Informatik</option>
+              <option>Ethik/Religion</option>
+              <option>Differenzierung</option>
+              <option>Feedback</option>
+              <option>Unterrichtsplanung</option>
+              <option>Sonstiges</option>
+            </select>
+            <div class="err-msg" id="err-category">Bitte ein Fach wählen.</div>
+          </div>
+          <div class="field-group">
+            <label>Schulstufe <span class="req">*</span></label>
+            <select id="f-level">
+              <option value="">— wählen —</option>
+              <option>Grundschule (1–4)</option>
+              <option>Sekundarstufe I (5–10)</option>
+              <option>Sekundarstufe II (11–13)</option>
+              <option>Berufsschule</option>
+              <option>Alle Stufen</option>
+            </select>
+            <div class="err-msg" id="err-level">Bitte eine Schulstufe wählen.</div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Schlüsselwörter (Tags) <span class="req">*</span></label>
+          <div class="tags-wrap" id="tags-wrap" onclick="document.getElementById('tags-input').focus()">
+            <input type="text" id="tags-input" class="tags-input" placeholder="Tag eingeben + Enter …">
+          </div>
+          <div class="hint">Mindestens 2 Tags — helfen beim Suchen (z.B. brüche, rechnen, visualisierung)</div>
+          <div class="err-msg" id="err-tags">Bitte mindestens 2 Tags eingeben.</div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label>Dein Name <span class="req">*</span></label>
+            <input id="f-author" type="text" placeholder="Vorname Nachname">
+            <div class="err-msg" id="err-author">Bitte deinen Namen eingeben.</div>
+          </div>
+          <div class="field-group">
+            <label>Schule / Institution</label>
+            <input id="f-school" type="text" placeholder="optional">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label>Lizenz</label>
+            <select id="f-license">
+              <option>CC BY 4.0</option>
+              <option>CC BY-SA 4.0</option>
+              <option>CC0 (gemeinfrei)</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Version</label>
+            <input id="f-version" type="text" value="1.0" placeholder="1.0">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div id="step2" class="panel" style="margin-top:1.25rem">
+      <div class="panel-head">
+        <h2>2 · Skill-Inhalt & Hintergrundwissen</h2>
+        <p>Schreibe die Anweisungen für die KI und lade optionales Hintergrundwissen hoch.</p>
+      </div>
+      <div class="panel-body">
+
+        <div class="field-group">
+          <label>Anweisungen für die KI <span class="req">*</span></label>
+          <textarea id="f-content" rows="10" placeholder="Beschreibe hier das Verhalten der KI:
+
+## Deine Aufgabe
+Du bist ein hilfreicher Assistent für ...
+
+## Verhalten
+- Antworte in einfacher Sprache
+- Stelle Rückfragen, um Verständnis zu sichern
+- ...
+
+## Einschränkungen
+- Bleibe beim Thema ..."></textarea>
+          <div class="hint">Markdown ist erlaubt. Dieser Text geht direkt als SKILL.md-Inhalt in die Bibliothek.</div>
+          <div class="err-msg" id="err-content">Bitte den Skill-Inhalt beschreiben.</div>
+        </div>
+
+        <div class="section-divider">Hintergrundwissen (optional)</div>
+
+        <div class="knowledge-drop" id="knowledge-drop">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+          <p>Dateien hier hineinziehen oder klicken</p>
+          <span>PDF, Markdown, TXT · max. 5 MB pro Datei · keine personenbezogenen Daten!</span>
+          <input type="file" id="knowledge-input" style="display:none" multiple accept=".pdf,.md,.txt,.markdown">
+        </div>
+        <div class="knowledge-list" id="knowledge-list"></div>
+
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div id="step3" class="panel" style="margin-top:1.25rem">
+      <div class="panel-head">
+        <h2>3 · Einreichen</h2>
+        <p>Wähle, wie du den Skill einreichen möchtest.</p>
+      </div>
+      <div class="panel-body">
+
+        <div class="github-panel" style="margin-top:0;border:none;box-shadow:none;background:transparent">
+          <div style="display:grid;gap:1rem">
+
+            <!-- Option A: GitHub PR -->
+            <div style="border:1.5px solid var(--border);border-radius:var(--radius-lg);overflow:hidden">
+              <div style="padding:1rem 1.25rem;background:#f8f9fe;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.625rem">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--navy)"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                <div>
+                  <div style="font-weight:600;font-size:.875rem;color:var(--navy)">Option A · Pull Request auf GitHub</div>
+                  <div style="font-size:.75rem;color:var(--muted)">Skill wird direkt ins Repository eingereicht (empfohlen)</div>
+                </div>
+              </div>
+              <div style="padding:1.125rem">
+                <div class="field-group" style="margin-bottom:.875rem">
+                  <label>GitHub Access Token <span class="req">*</span></label>
+                  <div class="token-field">
+                    <input id="f-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                    <button class="token-toggle" onclick="toggleToken()" title="Anzeigen/verbergen">
+                      <svg id="eye-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                  </div>
+                  <div class="token-hint">
+                    Benötigt einen <a href="https://github.com/settings/tokens/new?scopes=repo&description=OER-Skills-Bibliothek" target="_blank">GitHub Personal Access Token</a> mit <code>repo</code>-Berechtigung.
+                    Der Token wird nur lokal in diesem Fenster verwendet und nie gespeichert.
+                  </div>
+                </div>
+                <button class="btn btn-primary btn-full" id="btn-submit-pr" onclick="submitPR()">
+                  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  Pull Request erstellen
+                </button>
+                <div class="progress-wrap" id="pr-progress"><div class="progress-bar" id="pr-bar"></div></div>
+                <div class="status-box" id="pr-status"></div>
+              </div>
+            </div>
+
+            <div style="text-align:center;font-size:.8rem;color:var(--subtle);padding:.25rem 0">— oder —</div>
+
+            <!-- Option B: Download -->
+            <div style="border:1.5px solid var(--border);border-radius:var(--radius-lg);overflow:hidden">
+              <div style="padding:1rem 1.25rem;background:#f8f9fe;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.625rem">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--navy)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <div>
+                  <div style="font-weight:600;font-size:.875rem;color:var(--navy)">Option B · SKILL.md herunterladen</div>
+                  <div style="font-size:.75rem;color:var(--muted)">Datei lokal speichern und manuell hochladen</div>
+                </div>
+              </div>
+              <div style="padding:1.125rem;display:flex;gap:.625rem">
+                <button class="btn btn-ghost" style="flex:1" onclick="downloadSkill()">
+                  <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  SKILL.md laden
+                </button>
+                <button class="btn btn-ghost" style="flex:1" onclick="openIssue()">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  Als Issue einreichen
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: PREVIEW -->
+  <div>
+    <div class="preview-sticky">
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Vorschau</h2>
+          <p>So sieht deine SKILL.md aus</p>
+        </div>
+        <div class="panel-body" style="padding:1rem">
+          <pre class="preview-code" id="preview-code">← Formular ausfüllen …</pre>
+        </div>
+      </div>
+
+      <div style="margin-top:1rem;padding:1rem;background:var(--amber-bg);border:1px solid #fde68a;border-radius:var(--radius);font-size:.79rem;color:#78350f;line-height:1.55">
+        <strong>💡 Tipp:</strong> Gutes Hintergrundwissen für Skills sind Lehrpläne, Aufgabenbeispiele oder fachliche Erläuterungen als PDF oder Markdown-Datei.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ACTION BAR -->
+<div class="action-bar">
+  <span class="action-bar-left" id="action-hint">Fülle zuerst die Pflichtfelder aus.</span>
+  <div style="display:flex;gap:.625rem">
+    <button class="btn btn-ghost" onclick="clearForm()">Zurücksetzen</button>
+    <button class="btn btn-amber" onclick="scrollToSubmit()">
+      Weiter zum Einreichen →
+    </button>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ─────────────────────────────────────────────────────
+const REPO_OWNER = 'teacherette-susa';
+const REPO_NAME  = 'ki-skills';
+const REPO_BRANCH = 'main';
+const ISSUES_URL = `https://github.com/${REPO_OWNER}/${REPO_NAME}/issues/new?template=skill-einreichen.yml`;
+
+// ── STATE ──────────────────────────────────────────────────────
+let tags = [];
+let knowledgeFiles = [];
+
+// ── TAGS ───────────────────────────────────────────────────────
+const tagsInput = document.getElementById('tags-input');
+tagsInput.addEventListener('keydown', e => {
+  if ((e.key === 'Enter' || e.key === ',') && tagsInput.value.trim()) {
+    e.preventDefault();
+    addTag(tagsInput.value.trim().replace(/,/g, ''));
+    tagsInput.value = '';
+    updatePreview();
+  }
+  if (e.key === 'Backspace' && !tagsInput.value && tags.length) {
+    tags.pop();
+    renderTags();
+    updatePreview();
+  }
+});
+
+function addTag(t) {
+  const clean = t.toLowerCase().replace(/\s+/g, '-').replace(/[^a-züäöß0-9\-]/g, '');
+  if (clean && !tags.includes(clean) && tags.length < 10) {
+    tags.push(clean);
+    renderTags();
+  }
+}
+
+function renderTags() {
+  const wrap = document.getElementById('tags-wrap');
+  const chips = wrap.querySelectorAll('.tag-chip');
+  chips.forEach(c => c.remove());
+  tags.forEach((t, i) => {
+    const chip = document.createElement('span');
+    chip.className = 'tag-chip';
+    chip.innerHTML = `${t}<button onclick="removeTag(${i})" title="Entfernen">×</button>`;
+    wrap.insertBefore(chip, tagsInput);
+  });
+}
+
+function removeTag(i) {
+  tags.splice(i, 1);
+  renderTags();
+  updatePreview();
+}
+
+// ── CHAR COUNTER ───────────────────────────────────────────────
+const descEl = document.getElementById('f-desc');
+const ccDesc = document.getElementById('cc-desc');
+descEl.addEventListener('input', () => {
+  const l = descEl.value.length;
+  ccDesc.textContent = `${l}/280`;
+  ccDesc.className = 'char-counter' + (l > 260 ? ' warn' : '') + (l > 280 ? ' over' : '');
+  updatePreview();
+});
+
+// ── LIVE PREVIEW ───────────────────────────────────────────────
+['f-title','f-desc','f-category','f-level','f-author','f-school','f-license','f-version','f-content'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', updatePreview);
+});
+
+function slugify(s) {
+  return s.toLowerCase().trim()
+    .replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function buildSkillMd() {
+  const title   = document.getElementById('f-title').value.trim();
+  const desc    = document.getElementById('f-desc').value.trim();
+  const cat     = document.getElementById('f-category').value;
+  const level   = document.getElementById('f-level').value;
+  const author  = document.getElementById('f-author').value.trim();
+  const school  = document.getElementById('f-school').value.trim();
+  const license = document.getElementById('f-license').value;
+  const version = document.getElementById('f-version').value.trim() || '1.0';
+  const content = document.getElementById('f-content').value.trim();
+  const name    = slugify(title) || 'mein-skill';
+  const today   = new Date().toISOString().split('T')[0];
+
+  const tagsStr = tags.length ? `[${tags.join(', ')}]` : '[tag1, tag2]';
+
+  let fm = `---\n`;
+  fm += `name: ${name}\n`;
+  fm += `title: ${title || '...'}\n`;
+  fm += `description: >\n  ${(desc || '...').replace(/\n/g, '\n  ')}\n`;
+  fm += `category: ${cat || '...'}\n`;
+  fm += `level: ${level || '...'}\n`;
+  fm += `tags: ${tagsStr}\n`;
+  fm += `author: ${author || '...'}\n`;
+  if (school) fm += `school: ${school}\n`;
+  fm += `license: ${license}\n`;
+  fm += `version: "${version}"\n`;
+  fm += `created: ${today}\n`;
+  fm += `---\n\n`;
+  fm += content || '# Skill-Inhalt\n\nHier kommen die Anweisungen für die KI …';
+
+  return { md: fm, name };
+}
+
+function updatePreview() {
+  const { md } = buildSkillMd();
+  const pre = document.getElementById('preview-code');
+
+  // Syntax highlight
+  const lines = md.split('\n');
+  let inFm = false, fmDone = false, fmCount = 0;
+  const html = lines.map(l => {
+    if (l === '---') {
+      fmCount++;
+      if (fmCount === 1) { inFm = true; return `<span class="fm-sep">---</span>`; }
+      if (fmCount === 2) { inFm = false; fmDone = true; return `<span class="fm-sep">---</span>`; }
+    }
+    if (inFm) {
+      const m = l.match(/^([^:]+):(.*)/);
+      if (m) return `<span class="fm-key">${m[1]}:</span><span class="fm-val">${m[2]}</span>`;
+    }
+    return `<span class="content">${l.replace(/</g,'&lt;')}</span>`;
+  }).join('\n');
+  pre.innerHTML = html;
+
+  // Update hints
+  const filled = countFilled();
+  const hint = document.getElementById('action-hint');
+  hint.textContent = filled < 6 ? `${6 - filled} Pflichtfeld${6-filled===1?'':'er'} noch ausfüllen.` : '✓ Bereit zum Einreichen!';
+}
+
+function countFilled() {
+  let c = 0;
+  if (document.getElementById('f-title').value.trim()) c++;
+  if (document.getElementById('f-desc').value.trim()) c++;
+  if (document.getElementById('f-category').value) c++;
+  if (document.getElementById('f-level').value) c++;
+  if (document.getElementById('f-author').value.trim()) c++;
+  if (tags.length >= 2) c++;
+  if (document.getElementById('f-content').value.trim()) c++;
+  return c;
+}
+
+// ── KNOWLEDGE FILES ────────────────────────────────────────────
+const drop = document.getElementById('knowledge-drop');
+const kInput = document.getElementById('knowledge-input');
+
+drop.addEventListener('click', () => kInput.click());
+drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag-over'); });
+drop.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
+drop.addEventListener('drop', e => {
+  e.preventDefault();
+  drop.classList.remove('drag-over');
+  addFiles([...e.dataTransfer.files]);
+});
+kInput.addEventListener('change', () => { addFiles([...kInput.files]); kInput.value = ''; });
+
+function addFiles(files) {
+  files.forEach(f => {
+    if (f.size > 5 * 1024 * 1024) { alert(`"${f.name}" ist größer als 5 MB und wird übersprungen.`); return; }
+    if (!f.name.match(/\.(pdf|md|markdown|txt)$/i)) { alert(`"${f.name}": nur PDF, Markdown und TXT erlaubt.`); return; }
+    if (!knowledgeFiles.find(k => k.name === f.name)) knowledgeFiles.push(f);
+  });
+  renderKnowledge();
+}
+
+function renderKnowledge() {
+  const list = document.getElementById('knowledge-list');
+  list.innerHTML = knowledgeFiles.map((f, i) => `
+    <div class="knowledge-file">
+      <div class="knowledge-file-info">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span>${f.name}</span>
+        <span style="color:var(--subtle)">(${(f.size/1024).toFixed(0)} KB)</span>
+      </div>
+      <button onclick="removeFile(${i})" title="Entfernen">×</button>
+    </div>`).join('');
+}
+
+function removeFile(i) { knowledgeFiles.splice(i, 1); renderKnowledge(); }
+
+// ── VALIDATION ─────────────────────────────────────────────────
+function validate() {
+  let ok = true;
+  const checks = [
+    ['f-title', 'err-title', v => v.trim().length > 0],
+    ['f-desc', 'err-desc', v => v.trim().length > 0],
+    ['f-category', 'err-category', v => v !== ''],
+    ['f-level', 'err-level', v => v !== ''],
+    ['f-author', 'err-author', v => v.trim().length > 0],
+    ['f-content', 'err-content', v => v.trim().length > 20],
+  ];
+  checks.forEach(([fid, eid, test]) => {
+    const el = document.getElementById(fid);
+    const err = document.getElementById(eid);
+    if (!test(el.value)) {
+      el.classList.add('invalid');
+      err.classList.add('show');
+      ok = false;
+    } else {
+      el.classList.remove('invalid');
+      err.classList.remove('show');
+    }
+  });
+  if (tags.length < 2) {
+    document.getElementById('err-tags').classList.add('show');
+    document.getElementById('tags-wrap').style.borderColor = 'var(--error)';
+    ok = false;
+  } else {
+    document.getElementById('err-tags').classList.remove('show');
+    document.getElementById('tags-wrap').style.borderColor = '';
+  }
+  if (!ok) document.querySelector('.invalid, [style*="var(--error)"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  return ok;
+}
+
+// ── GITHUB PR ──────────────────────────────────────────────────
+function setProgress(pct) {
+  const prog = document.getElementById('pr-progress');
+  const bar  = document.getElementById('pr-bar');
+  prog.classList.toggle('show', pct > 0 && pct < 100);
+  bar.style.width = pct + '%';
+}
+
+function setStatus(type, html) {
+  const box = document.getElementById('pr-status');
+  const icons = {
+    success: '<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+    error:   '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+    loading: '<div class="spinner"></div>',
+  };
+  box.className = `status-box status-${type} show`;
+  box.innerHTML = `${icons[type] || ''}<span>${html}</span>`;
+}
+
+async function ghFetch(token, path, method='GET', body=null) {
+  const opts = {
+    method,
+    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' },
+  };
+  if (body) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
+  const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}${path}`, opts);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
+  return data;
+}
+
+async function fileToBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+async function submitPR() {
+  if (!validate()) return;
+
+  const token = document.getElementById('f-token').value.trim();
+  if (!token) { alert('Bitte einen GitHub Access Token eingeben.'); return; }
+
+  const btn = document.getElementById('btn-submit-pr');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Wird eingereicht …';
+
+  const { md, name } = buildSkillMd();
+  const branch = `skill/${name}-${Date.now()}`;
+  const folder = `skills/${name}`;
+
+  try {
+    // 1. Aktuellen Commit-SHA holen
+    setStatus('loading', 'Verbinde mit GitHub …'); setProgress(10);
+    const refData = await ghFetch(token, `/git/ref/heads/${REPO_BRANCH}`);
+    const baseSha = refData.object.sha;
+
+    // 2. Branch erstellen
+    setStatus('loading', 'Branch wird erstellt …'); setProgress(25);
+    await ghFetch(token, '/git/refs', 'POST', { ref: `refs/heads/${branch}`, sha: baseSha });
+
+    // 3. SKILL.md committen
+    setStatus('loading', 'SKILL.md wird hochgeladen …'); setProgress(45);
+    await ghFetch(token, `/contents/${folder}/SKILL.md`, 'PUT', {
+      message: `feat: Skill hinzufügen – ${document.getElementById('f-title').value.trim()}`,
+      content: btoa(unescape(encodeURIComponent(md))),
+      branch,
+    });
+
+    // 4. Knowledge-Dateien committen
+    if (knowledgeFiles.length) {
+      for (let i = 0; i < knowledgeFiles.length; i++) {
+        setStatus('loading', `Wissen hochladen (${i+1}/${knowledgeFiles.length}) …`);
+        setProgress(45 + (i+1) / knowledgeFiles.length * 30);
+        const b64 = await fileToBase64(knowledgeFiles[i]);
+        await ghFetch(token, `/contents/${folder}/knowledge/${knowledgeFiles[i].name}`, 'PUT', {
+          message: `feat: Wissen hinzufügen – ${knowledgeFiles[i].name}`,
+          content: b64,
+          branch,
+        });
+      }
+    }
+
+    // 5. Pull Request erstellen
+    setStatus('loading', 'Pull Request wird erstellt …'); setProgress(90);
+    const pr = await ghFetch(token, '/pulls', 'POST', {
+      title: `Skill: ${document.getElementById('f-title').value.trim()}`,
+      body: `**Autor:in:** ${document.getElementById('f-author').value.trim()}\n**Fach:** ${document.getElementById('f-category').value}\n**Stufe:** ${document.getElementById('f-level').value}\n**Tags:** ${tags.join(', ')}\n\n> ${document.getElementById('f-desc').value.trim()}\n\n---\n*Eingereicht über den Skill-Creator*`,
+      head: branch,
+      base: REPO_BRANCH,
+    });
+
+    setProgress(100);
+    setStatus('success', `🎉 Eingereicht! Dein Skill wird jetzt vom Team geprüft. <a href="${pr.html_url}" target="_blank">Pull Request ansehen →</a>`);
+    btn.innerHTML = '✓ Eingereicht';
+    btn.className = 'btn btn-success btn-full';
+
+  } catch (err) {
+    setProgress(0);
+    setStatus('error', `Fehler: ${err.message}. Bitte Token und Internetverbindung prüfen.`);
+    btn.disabled = false;
+    btn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Pull Request erstellen';
+  }
+}
+
+// ── DOWNLOAD ───────────────────────────────────────────────────
+function downloadSkill() {
+  if (!validate()) return;
+  const { md, name } = buildSkillMd();
+  const blob = new Blob([md], { type: 'text/markdown' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'SKILL.md';
+  a.click();
+}
+
+// ── ISSUE ──────────────────────────────────────────────────────
+function openIssue() {
+  window.open(ISSUES_URL, '_blank');
+}
+
+// ── HELPERS ────────────────────────────────────────────────────
+function toggleToken() {
+  const inp = document.getElementById('f-token');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+function clearForm() {
+  if (!confirm('Formular wirklich zurücksetzen?')) return;
+  ['f-title','f-desc','f-content','f-author','f-school','f-version'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-category').selectedIndex = 0;
+  document.getElementById('f-level').selectedIndex = 0;
+  document.getElementById('f-license').selectedIndex = 0;
+  document.getElementById('f-version').value = '1.0';
+  tags = []; knowledgeFiles = [];
+  renderTags(); renderKnowledge(); updatePreview();
+}
+
+function scrollToSubmit() {
+  document.getElementById('step3').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── STEPS HIGHLIGHT ────────────────────────────────────────────
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const n = e.target.id.replace('step','');
+      ['1','2','3'].forEach(i => {
+        const item = document.getElementById(`step${i}-item`);
+        item.classList.remove('active','done');
+        if (i < n) item.classList.add('done');
+        else if (i === n) item.classList.add('active');
+      });
+    }
+  });
+}, { threshold: 0.3 });
+['step1','step2','step3'].forEach(id => observer.observe(document.getElementById(id)));
+
+// ── INIT ───────────────────────────────────────────────────────
+updatePreview();
+</script>
+</body>
+</html>
