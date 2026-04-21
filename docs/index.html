@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OER-Skills-Bibliothek · Schul-KI-Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1a2744;--navy-light:#253660;--navy-hover:#2d4075;
+  --amber:#f59e0b;--amber-dark:#d97706;--amber-bg:#fef3c7;
+  --bg:#f3f4f8;--surface:#ffffff;--border:#e4e7ef;
+  --text:#1a1f36;--muted:#64748b;--subtle:#94a3b8;
+  --success:#10b981;--radius:10px;--radius-lg:16px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);
+  --shadow-md:0 4px 12px rgba(0,0,0,.1);
+}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+h1,h2,h3{font-family:'DM Serif Display',serif}
+
+/* HEADER */
+.header{background:var(--navy);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:50}
+.header-logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+.logo-icon{width:32px;height:32px;background:var(--amber);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.logo-icon svg{fill:var(--navy);width:18px;height:18px}
+.logo-text{color:#fff;font-weight:600;font-size:.95rem;letter-spacing:-.01em}
+.header-link{color:rgba(255,255,255,.6);font-size:.8125rem;text-decoration:none;display:flex;align-items:center;gap:.4rem;transition:color .15s}
+.header-link:hover{color:#fff}
+.header-link svg{width:14px;height:14px;fill:currentColor}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 100%);padding:3rem 2rem 3.5rem;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);color:var(--amber);font-size:.75rem;font-weight:600;padding:.3rem .875rem;border-radius:99px;margin-bottom:1.25rem;text-transform:uppercase;letter-spacing:.06em}
+.hero h1{color:#fff;font-size:2.25rem;line-height:1.2;margin-bottom:.75rem}
+.hero p{color:rgba(255,255,255,.65);font-size:1rem;max-width:540px;margin:0 auto 2rem;line-height:1.6}
+.hero-stats{display:flex;gap:2rem;justify-content:center}
+.stat{text-align:center}
+.stat-num{font-family:'DM Serif Display',serif;font-size:1.75rem;color:#fff;display:block}
+.stat-label{font-size:.75rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.05em}
+
+/* SEARCH */
+.search-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:1.25rem 2rem;position:sticky;top:58px;z-index:40;display:flex;gap:.75rem;align-items:center}
+.search-wrap{flex:1;position:relative;max-width:540px}
+.search-wrap svg{position:absolute;left:.875rem;top:50%;transform:translateY(-50%);fill:var(--subtle);width:17px;height:17px;pointer-events:none}
+#search-input{width:100%;padding:.625rem .875rem .625rem 2.625rem;border:1.5px solid var(--border);border-radius:var(--radius);font-size:.9375rem;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);transition:border-color .15s}
+#search-input:focus{outline:none;border-color:var(--amber);background:#fff}
+.filter-group{display:flex;gap:.5rem;flex-wrap:wrap}
+.filter-select{padding:.5rem .75rem;border:1.5px solid var(--border);border-radius:8px;font-size:.8125rem;font-family:'DM Sans',sans-serif;color:var(--muted);background:var(--surface);cursor:pointer;transition:border-color .15s}
+.filter-select:focus{outline:none;border-color:var(--amber)}
+
+/* MAIN */
+.main{padding:1.75rem 2rem;max-width:1120px;margin:0 auto;width:100%}
+.results-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.results-count{font-size:.875rem;color:var(--muted)}
+.results-count strong{color:var(--text)}
+
+/* SKILL GRID */
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.125rem}
+.skill-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;display:flex;flex-direction:column;gap:.75rem;transition:all .2s;cursor:pointer;text-decoration:none;color:inherit}
+.skill-card:hover{border-color:var(--amber);box-shadow:0 4px 18px rgba(245,158,11,.15);transform:translateY(-2px)}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem}
+.cat-pill{font-size:.6875rem;font-weight:600;padding:.2rem .625rem;border-radius:99px;white-space:nowrap;flex-shrink:0}
+.cat-Mathematik{background:#eff6ff;color:#1d4ed8}
+.cat-Deutsch{background:#fdf4ff;color:#7e22ce}
+.cat-Englisch{background:#f0fdf4;color:#15803d}
+.cat-Biologie{background:#ecfdf5;color:#065f46}
+.cat-Geschichte{background:#fff7ed;color:#c2410c}
+.cat-Physik{background:#f0f9ff;color:#075985}
+.cat-Chemie{background:#fefce8;color:#854d0e}
+.cat-Informatik{background:#f5f3ff;color:#5b21b6}
+.cat-Feedback{background:#fff1f2;color:#be123c}
+.cat-Unterrichtsplanung{background:#f0fdf4;color:#15803d}
+.cat-default{background:var(--bg);color:var(--muted)}
+.skill-card h3{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);line-height:1.3;flex:1}
+.skill-desc{font-size:.8125rem;color:var(--muted);line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card-tags{display:flex;flex-wrap:wrap;gap:.3rem}
+.tag{font-size:.6875rem;padding:.2rem .5rem;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--subtle)}
+.card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:.625rem;border-top:1px solid var(--border)}
+.card-meta{font-size:.75rem;color:var(--subtle)}
+.card-meta span{display:block}
+.download-btn{display:inline-flex;align-items:center;gap:.375rem;padding:.4rem .875rem;background:var(--navy);color:#fff;border-radius:8px;font-size:.8125rem;font-weight:500;text-decoration:none;transition:background .15s;white-space:nowrap}
+.download-btn:hover{background:var(--navy-light)}
+.download-btn svg{width:13px;height:13px;fill:currentColor}
+.knowledge-badge{font-size:.6875rem;color:var(--success);font-weight:500;display:flex;align-items:center;gap:.25rem}
+.knowledge-badge svg{width:12px;height:12px;fill:currentColor}
+
+/* EMPTY STATE */
+.empty-state{grid-column:1/-1;text-align:center;padding:5rem 2rem;color:var(--muted)}
+.empty-state svg{width:48px;height:48px;fill:var(--border);margin-bottom:1rem}
+.empty-state h3{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--navy);margin-bottom:.5rem}
+.empty-state p{font-size:.875rem;line-height:1.6;max-width:360px;margin:0 auto 1.5rem}
+.btn-outline{display:inline-flex;align-items:center;gap:.4rem;padding:.625rem 1.25rem;border:1.5px solid var(--border);border-radius:var(--radius);font-size:.875rem;font-weight:500;color:var(--muted);text-decoration:none;transition:all .15s}
+.btn-outline:hover{border-color:var(--amber);color:var(--text)}
+
+/* LOADING */
+.loading{grid-column:1/-1;display:flex;justify-content:center;padding:4rem}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--amber);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* MODAL */
+.modal-backdrop{position:fixed;inset:0;background:rgba(10,15,30,.55);display:flex;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-backdrop.open{opacity:1;pointer-events:all}
+.modal{background:var(--surface);border-radius:var(--radius-lg);width:min(560px,95vw);max-height:85vh;overflow-y:auto;box-shadow:var(--shadow-md);transform:translateY(12px);transition:transform .2s;position:relative}
+.modal-backdrop.open .modal{transform:translateY(0)}
+.modal-header{padding:1.5rem 1.5rem 1rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:1}
+.modal-header h2{font-size:1.25rem;color:var(--navy);margin-bottom:.25rem}
+.modal-close{position:absolute;top:1.25rem;right:1.25rem;background:none;border:none;cursor:pointer;padding:.25rem;border-radius:6px;color:var(--subtle);transition:color .15s}
+.modal-close:hover{color:var(--text);background:var(--bg)}
+.modal-close svg{width:18px;height:18px;fill:currentColor;display:block}
+.modal-body{padding:1.25rem 1.5rem}
+.info-row{display:flex;gap:.75rem;margin-bottom:.625rem;align-items:baseline}
+.info-label{font-size:.75rem;font-weight:600;color:var(--subtle);text-transform:uppercase;letter-spacing:.04em;min-width:100px;flex-shrink:0}
+.info-val{font-size:.875rem;color:var(--text)}
+.info-val.tag-list{display:flex;flex-wrap:wrap;gap:.3rem}
+.skill-content-preview{margin-top:1rem;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius);padding:1rem;font-size:.8125rem;color:var(--muted);line-height:1.6;white-space:pre-wrap;font-family:monospace;max-height:200px;overflow-y:auto}
+.modal-footer{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;gap:.75rem;justify-content:flex-end;position:sticky;bottom:0;background:var(--surface)}
+.btn-primary{display:inline-flex;align-items:center;gap:.4rem;padding:.625rem 1.25rem;background:var(--navy);color:#fff;border:none;border-radius:var(--radius);font-size:.9375rem;font-weight:500;cursor:pointer;text-decoration:none;transition:background .15s}
+.btn-primary:hover{background:var(--navy-light)}
+.btn-ghost{display:inline-flex;align-items:center;padding:.625rem 1.25rem;background:none;color:var(--muted);border:1.5px solid var(--border);border-radius:var(--radius);font-size:.9375rem;font-weight:500;cursor:pointer;transition:all .15s}
+.btn-ghost:hover{background:var(--bg);color:var(--text)}
+
+/* FOOTER */
+footer{text-align:center;padding:2.5rem 1rem;font-size:.8125rem;color:var(--subtle);border-top:1px solid var(--border);margin-top:3rem}
+footer a{color:var(--muted);text-decoration:none}
+footer a:hover{color:var(--text)}
+
+@media(max-width:640px){
+  .hero h1{font-size:1.625rem}
+  .hero-stats{gap:1.25rem}
+  .search-bar{flex-wrap:wrap;gap:.625rem}
+  .filter-group{width:100%}
+  .skills-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <a href="#" class="header-logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
+    <span class="logo-text">OER-Skills-Bibliothek</span>
+  </a>
+  <a href="https://github.com/deine-schule/oer-skills-bibliothek/issues/new?template=skill-einreichen.yml" class="header-link" target="_blank">
+    <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+    Skill einreichen
+  </a>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+    Offene Bildungsressourcen
+  </div>
+  <h1>Skills für die KI im Unterricht</h1>
+  <p>Finde, lade und teile didaktisch aufbereitete KI-Skills — kostenlos, offen, von Lehrkräften für Lehrkräfte.</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num" id="stat-count">–</span><span class="stat-label">Skills</span></div>
+    <div class="stat"><span class="stat-num" id="stat-cats">–</span><span class="stat-label">Fächer</span></div>
+    <div class="stat"><span class="stat-num" id="stat-authors">–</span><span class="stat-label">Autor:innen</span></div>
+  </div>
+</section>
+
+<!-- SEARCH BAR -->
+<div class="search-bar">
+  <div class="search-wrap">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input id="search-input" type="search" placeholder="Skills suchen: Fach, Thema, Schulstufe …" autocomplete="off">
+  </div>
+  <div class="filter-group">
+    <select id="filter-category" class="filter-select">
+      <option value="">Alle Fächer</option>
+    </select>
+    <select id="filter-level" class="filter-select">
+      <option value="">Alle Stufen</option>
+    </select>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="results-meta">
+    <p class="results-count" id="results-count"></p>
+  </div>
+  <div class="skills-grid" id="skills-grid">
+    <div class="loading"><div class="spinner"></div></div>
+  </div>
+</main>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <h2 id="modal-title"></h2>
+      <p id="modal-subtitle" style="font-size:.8125rem;color:var(--muted);margin-top:.2rem"></p>
+      <button class="modal-close" onclick="closeModal()">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal()">Schließen</button>
+      <a class="btn-primary" id="modal-download" href="#" download>
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:14px;height:14px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        ZIP herunterladen
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>
+    Alle Skills stehen unter offener Lizenz (CC BY 4.0 sofern nicht anders angegeben) &nbsp;·&nbsp;
+    <a href="https://github.com/deine-schule/oer-skills-bibliothek" target="_blank">GitHub</a> &nbsp;·&nbsp;
+    <a href="https://github.com/deine-schule/oer-skills-bibliothek/blob/main/CONTRIBUTING.md" target="_blank">Skill beitragen</a>
+  </p>
+</footer>
+
+<script>
+// ── Konfiguration ──────────────────────────────────────────────
+const INDEX_URL = 'skills-index.json';
+// Im lokalen Test: const INDEX_URL = 'skills-index.json';
+
+// ── State ──────────────────────────────────────────────────────
+let allSkills = [];
+let filteredSkills = [];
+let currentSkill = null;
+
+// ── Hilfsfunktionen ────────────────────────────────────────────
+function catClass(cat) {
+  const map = {
+    'Mathematik':'cat-Mathematik','Deutsch':'cat-Deutsch','Englisch':'cat-Englisch',
+    'Biologie':'cat-Biologie','Geschichte':'cat-Geschichte','Physik':'cat-Physik',
+    'Chemie':'cat-Chemie','Informatik':'cat-Informatik','Feedback':'cat-Feedback',
+    'Unterrichtsplanung':'cat-Unterrichtsplanung'
+  };
+  return map[cat] || 'cat-default';
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function highlight(text, query) {
+  if (!query) return escHtml(text);
+  const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+  return escHtml(text).replace(re, '<mark style="background:var(--amber-bg);color:var(--navy)">$1</mark>');
+}
+
+// ── Render ─────────────────────────────────────────────────────
+function renderSkills(skills, query) {
+  const grid = document.getElementById('skills-grid');
+  const count = document.getElementById('results-count');
+
+  count.innerHTML = `<strong>${skills.length}</strong> Skill${skills.length !== 1 ? 's' : ''} gefunden`;
+
+  if (skills.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <h3>Keine Skills gefunden</h3>
+        <p>Zu deiner Suche gibt es noch keine Treffer. Wie wäre es, selbst einen Skill beizutragen?</p>
+        <a href="https://github.com/deine-schule/oer-skills-bibliothek/issues/new?template=skill-einreichen.yml"
+           class="btn-outline" target="_blank">
+          Skill einreichen →
+        </a>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = skills.map(s => `
+    <div class="skill-card" onclick="openModal('${s.id}')">
+      <div class="card-top">
+        <h3>${highlight(s.title, query)}</h3>
+        <span class="cat-pill ${catClass(s.category)}">${escHtml(s.category)}</span>
+      </div>
+      <p class="skill-desc">${highlight(s.description, query)}</p>
+      ${s.tags.length ? `<div class="card-tags">${s.tags.slice(0,5).map(t=>`<span class="tag">${escHtml(t)}</span>`).join('')}</div>` : ''}
+      <div class="card-footer">
+        <div class="card-meta">
+          <span>${escHtml(s.level || '')}</span>
+          <span style="color:var(--subtle)">${escHtml(s.author || '')}</span>
+          ${s.hasKnowledge ? `<span class="knowledge-badge" style="margin-top:.25rem">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            inkl. Wissen
+          </span>` : ''}
+        </div>
+        <a class="download-btn" href="${escHtml(s.downloadUrl)}" download onclick="event.stopPropagation()">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          ZIP
+        </a>
+      </div>
+    </div>`).join('');
+}
+
+// ── Filter & Suche ─────────────────────────────────────────────
+function applyFilters() {
+  const q = document.getElementById('search-input').value.trim().toLowerCase();
+  const cat = document.getElementById('filter-category').value;
+  const lvl = document.getElementById('filter-level').value;
+
+  filteredSkills = allSkills.filter(s => {
+    const matchQ = !q || s.searchText.includes(q);
+    const matchCat = !cat || s.category === cat;
+    const matchLvl = !lvl || s.level === lvl;
+    return matchQ && matchCat && matchLvl;
+  });
+
+  renderSkills(filteredSkills, q);
+}
+
+// ── Modal ──────────────────────────────────────────────────────
+function openModal(id) {
+  const s = allSkills.find(x => x.id === id);
+  if (!s) return;
+  currentSkill = s;
+
+  document.getElementById('modal-title').textContent = s.title;
+  document.getElementById('modal-subtitle').textContent = `${s.category} · ${s.level}`;
+  document.getElementById('modal-download').href = s.downloadUrl;
+
+  const rows = [
+    ['Autor:in', s.author],
+    ['Schule', s.school],
+    ['Lizenz', s.license],
+    ['Version', s.version],
+    ['Schulstufe', s.level],
+    ['Tags', s.tags],
+  ].filter(([,v]) => v && (!Array.isArray(v) || v.length));
+
+  const knowledgeHtml = s.hasKnowledge ? `
+    <div class="info-row">
+      <span class="info-label">Wissen</span>
+      <span class="info-val" style="color:var(--success)">
+        ${s.knowledgeFiles.map(f => `📄 ${escHtml(f.name)}`).join(', ')}
+      </span>
+    </div>` : '';
+
+  document.getElementById('modal-body').innerHTML = `
+    ${rows.map(([label, val]) => `
+      <div class="info-row">
+        <span class="info-label">${escHtml(label)}</span>
+        <span class="info-val ${Array.isArray(val) ? 'tag-list' : ''}">
+          ${Array.isArray(val)
+            ? val.map(t => `<span class="tag">${escHtml(t)}</span>`).join('')
+            : escHtml(val)}
+        </span>
+      </div>`).join('')}
+    ${knowledgeHtml}
+    <div style="margin-top:1rem;font-size:.75rem;font-weight:600;color:var(--subtle);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem">Beschreibung</div>
+    <p style="font-size:.875rem;color:var(--muted);line-height:1.6">${escHtml(s.description)}</p>
+    <div style="margin-top:1.25rem;padding:.875rem 1rem;background:var(--amber-bg);border-radius:var(--radius);font-size:.8125rem;color:#92400e;line-height:1.5">
+      <strong>📥 So importieren:</strong> ZIP herunterladen → Im Schul-KI-Portal unter <em>Skills → Importieren</em> hochladen.
+    </div>
+  `;
+
+  document.getElementById('modal-backdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal-backdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modal-backdrop').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-backdrop')) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ── Init ───────────────────────────────────────────────────────
+async function init() {
+  try {
+    const res = await fetch(INDEX_URL);
+    const data = await res.json();
+    allSkills = data.skills || [];
+
+    // Stats
+    document.getElementById('stat-count').textContent = allSkills.length;
+    const cats = new Set(allSkills.map(s => s.category));
+    document.getElementById('stat-cats').textContent = cats.size;
+    const authors = new Set(allSkills.map(s => s.author).filter(Boolean));
+    document.getElementById('stat-authors').textContent = authors.size;
+
+    // Filter-Dropdowns befüllen
+    const catSelect = document.getElementById('filter-category');
+    const lvlSelect = document.getElementById('filter-level');
+    const levels = [...new Set(allSkills.map(s => s.level).filter(Boolean))].sort();
+
+    [...cats].sort().forEach(c => {
+      const o = document.createElement('option');
+      o.value = c; o.textContent = c;
+      catSelect.appendChild(o);
+    });
+    levels.forEach(l => {
+      const o = document.createElement('option');
+      o.value = l; o.textContent = l;
+      lvlSelect.appendChild(o);
+    });
+
+    // Event-Listener
+    document.getElementById('search-input').addEventListener('input', applyFilters);
+    document.getElementById('filter-category').addEventListener('change', applyFilters);
+    document.getElementById('filter-level').addEventListener('change', applyFilters);
+
+    applyFilters();
+
+    // URL-Parameter auswerten (z.B. ?q=mathematik)
+    const urlQ = new URLSearchParams(window.location.search).get('q');
+    if (urlQ) {
+      document.getElementById('search-input').value = urlQ;
+      applyFilters();
+    }
+
+  } catch (err) {
+    document.getElementById('skills-grid').innerHTML = `
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <h3>Index konnte nicht geladen werden</h3>
+        <p>Stelle sicher, dass <code>skills-index.json</code> im selben Ordner wie diese Datei liegt oder GitHub Pages korrekt eingerichtet ist.</p>
+      </div>`;
+    console.error('Fehler beim Laden des Index:', err);
+  }
+}
+
+init();
+</script>
+</body>
+</html>

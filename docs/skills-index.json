@@ -1,0 +1,24 @@
+{
+  "generated": "2025-04-21T10:00:00.000Z",
+  "count": 1,
+  "skills": [
+    {
+      "id": "beispiel-skill",
+      "name": "bruchrechnung-erklaerer",
+      "title": "Bruchrechnung-Erklärer (Klasse 5/6)",
+      "description": "Erklärt Brüche und Bruchrechnungen für Schüler:innen der 5. und 6. Klasse in einfacher Sprache mit anschaulichen Alltagsbeispielen. Ideal als interaktiver Lernbegleiter oder Hausaufgabenhilfe. Stellt gezielte Rückfragen, um Verständnis zu sichern.",
+      "category": "Mathematik",
+      "level": "Sekundarstufe I",
+      "tags": ["brüche", "bruchrechnung", "mathematik", "klasse-5", "klasse-6", "erklären", "üben"],
+      "author": "Maria Müller",
+      "school": "Gesamtschule Musterstadt",
+      "license": "CC BY 4.0",
+      "version": "1.0",
+      "created": "2025-03-15",
+      "knowledgeFiles": [],
+      "hasKnowledge": false,
+      "downloadUrl": "downloads/beispiel-skill.zip",
+      "searchText": "bruchrechnung-erklärer klasse 5/6 erklärt brüche und bruchrechnungen für schüler:innen der 5. und 6. klasse mathematik sekundarstufe i brüche bruchrechnung mathematik klasse-5 klasse-6 erklären üben"
+    }
+  ]
+}
