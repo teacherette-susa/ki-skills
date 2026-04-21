@@ -2,7 +2,7 @@
 
 Eine offene Sammlung von KI-Skills für den Einsatz im Unterricht — erstellt von Lehrkräften, für Lehrkräfte.
 
-> **[🔍 Skills durchsuchen & herunterladen →](https://deine-schule.github.io/oer-skills-bibliothek/)**
+> **[🔍 Skills durchsuchen & herunterladen →](https://teacherette-susa.github.io/ki-skills/)**
 
 ---
 
@@ -23,7 +23,7 @@ Ein fertiger Skill kann direkt in das Schul-KI-Portal importiert werden.
 
 ### Skill finden & herunterladen
 
-1. Die **[Suchseite](https://deine-schule.github.io/oer-skills-bibliothek/)** öffnen
+1. Die **[Suchseite](https://teacherette-susa.github.io/ki-skills/)** öffnen
 2. Suchbegriff eingeben (z.B. „Mathematik", „Feedback", „Deutsch")
 3. Skill auswählen und als `.zip` herunterladen
 4. Im Schul-KI-Portal unter *Skills → Importieren* hochladen
@@ -34,7 +34,7 @@ Zwei Wege stehen offen:
 
 **Weg A – GitHub Pull Request** *(für technisch Versierte)*
 ```bash
-git clone https://github.com/deine-schule/oer-skills-bibliothek
+git clone https://github.com/teacherette-susa/ki-skills
 cd oer-skills-bibliothek
 cp -r skill-template skills/mein-neuer-skill
 # SKILL.md und knowledge/ befüllen
